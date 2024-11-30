@@ -1,4 +1,4 @@
-;DRAFT, to be tested
+;DRAFT, not working ATM
 
 section .data
 
