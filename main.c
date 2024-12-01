@@ -1,61 +1,71 @@
-main.c #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
 
 // Prototypes for kernels
-float dot_product_c(const float* a, const float* b, int n); // C kernel
-//extern float dot_product_asm(const float* a, const float* b, int n); // Assembly kernel
+float dotProduct(int length, float* arrayX, float* arrayY); // C kernel
+extern float dotProduct(int length, float* arrayX, float* arrayY); // Assembly kernel
+
+// C kernel implementation
+float dotProduct(int length, float* arrayX, float* arrayY) {
+    float resultSum = 0.0f;
+    for (int i = 0; i < length; i++) {
+        resultSum += arrayX[i] * arrayY[i];
+    }
+    return resultSum;
+}
 
 // Initialize vectors with random values
-void initialize_vectors(float* a, float* b, int n) {
-    for (int i = 0; i < n; i++) {
-        a[i] = (float)rand() / RAND_MAX;
-        b[i] = (float)rand() / RAND_MAX;
+void initializeVectors(float* arrayX, float* arrayY, int length) {
+    for (int i = 0; i < length; i++) {
+        arrayX[i] = ((float)rand() / (float)(RAND_MAX)) * 100.0f;
+        arrayY[i] = ((float)rand() / (float)(RAND_MAX)) * 100.0f;
     }
 }
 
 int main() {
     // Size of vectors
-    int n = 1 << 20; // 2^20, adjust to 2^24 or higher for testing
+    int length = 1 << 28; // 2^20
 
     // Allocate memory for vectors
-    float* a = (float*)malloc(n * sizeof(float));
-    float* b = (float*)malloc(n * sizeof(float));
-    if (!a || !b) {
-        printf("Memory allocation failed.\n");
+    float* arrayX = (float*)malloc(length * sizeof(float));
+    float* arrayY = (float*)malloc(length * sizeof(float));
+    if (!arrayX || !arrayY) {
+        printf("Error: Memory allocation failed.\n");
         return -1;
     }
 
     // Initialize vectors
-    initialize_vectors(a, b, n);
+    srand((unsigned int)time(NULL));
+    initializeVectors(arrayX, arrayY, length);
 
-    //---------------------Run and time the C kernel ---------------------
-    float sdot_c = 0.0f;
-    clock_t start = clock();
+    //--------------------- Run and time the C kernel ---------------------
+    float cKernelResult = 0.0f;
+    clock_t startClock = clock();
     for (int i = 0; i < 20; i++) { // Run kernel 20 times for averaging
-        sdot_c = dot_product_c(a, b, n);
+        cKernelResult = dotProduct(length, arrayX, arrayY);
     }
-    clock_t end = clock();
-    double c_time = ((double)(end - start) / CLOCKS_PER_SEC) / 20;
+    clock_t endClock = clock();
+    double cKernelAverageTime = ((double)(endClock - startClock) / CLOCKS_PER_SEC) / 20;
 
-    printf("C Kernel Result: %f\n", sdot_c);
-    printf("C Kernel Average Time: %f seconds\n", c_time);
+    printf("C Kernel Result: %f\n", cKernelResult);
+    printf("C Kernel Average Time: %f seconds\n", cKernelAverageTime);
 
-    // --------------------- Run and time the Assembly kernel ---------------------
-    float sdot_asm = 0.0f;
-    start = clock();
+    //--------------------- Run and time the Assembly kernel ---------------------
+    float asmKernelResult = 0.0f;
+    startClock = clock();
     for (int i = 0; i < 20; i++) { // Run kernel 20 times for averaging
-        //sdot_asm = dot_product_asm(a, b, n);
+        asmKernelResult = dotProduct(length, arrayX, arrayY);
     }
-    end = clock();
-    double asm_time = ((double)(end - start) / CLOCKS_PER_SEC) / 20;
+    endClock = clock();
+    double asmKernelAverageTime = ((double)(endClock - startClock) / CLOCKS_PER_SEC) / 20;
 
-    //printf("Assembly Kernel Result: %f\n", sdot_asm);
-    //printf("Assembly Kernel Average Time: %f seconds\n", asm_time);
+    printf("Assembly Kernel Result: %f\n", asmKernelResult);
+    printf("Assembly Kernel Average Time: %f seconds\n", asmKernelAverageTime);
 
-    //--------------------- opt: Correctness check ---------------------
-    if (fabs(sdot_c - sdot_asm) < 1e-5) {
+    //--------------------- Correctness check ---------------------
+    if (fabs(cKernelResult - asmKernelResult) < 1e-5) {
         printf("Assembly Kernel Correctness: PASSED\n");
     }
     else {
@@ -63,8 +73,8 @@ int main() {
     }
 
     // Free memory
-    free(a);
-    free(b);
+    free(arrayX);
+    free(arrayY);
 
     return 0;
 }
