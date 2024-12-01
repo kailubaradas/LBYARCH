@@ -32,6 +32,16 @@ The goal is to compare the performance of the C and assembly versions over vario
    nasm -f elf64 dot_product_asm.asm -o dot_product_asm.o
 
 ## Results and Comparative Analysis
+2^20
+![image](https://github.com/user-attachments/assets/2c2fd4ff-0757-4336-9e05-379184489ce3)
+
+
+2^24
+![image](https://github.com/user-attachments/assets/1478fd46-cd16-48ad-b03d-add6f6473195)
+
+2^28
+![image](https://github.com/user-attachments/assets/9812adcd-30d5-4190-8974-4327c694596b)
+
 
 ### Performance Results (Placeholders)
 
@@ -39,7 +49,7 @@ The goal is to compare the performance of the C and assembly versions over vario
 |------------------|-----------------|------------------------|-------------------------|-------------------------------|-------------|
 | 2^20            | **TBD**         | **TBD**                | **TBD**                 | **TBD**                       | **TBD**     |
 | 2^24            | **TBD**         | **TBD**                | **TBD**                 | **TBD**                       | **TBD**     |
-| 2^30            | **TBD**         | **TBD**                | **TBD**                 | **TBD**                       | **TBD**     |
+| 2^28            | **TBD**         | **TBD**                | **TBD**                 | **TBD**                       | **TBD**     |
 
 ---
 
@@ -93,5 +103,6 @@ The comparative analysis of these results will inform the following potential en
 2. Extend support for **double-precision floating-point numbers** using instructions like `movsd`, `mulsd`, and `addsd`.
 3. Profile memory and CPU usage to provide deeper insights into resource efficiency.
 
+
 ---
-### Video Demo (insert link)
+### ([Video Demo](https://drive.google.com/file/d/1PtW7qraLdHu0Xg9PR1b-LQSuZVESAHlJ/view?usp=sharing))
