@@ -1,10 +1,8 @@
 section .data
     
-
 section .text
 bits 64
 global dotProduct
-
 
 dotProductAsm:
     xorps xmm0, xmm0       ; Clear xmm0 to store the sum (result)
@@ -15,7 +13,6 @@ dot_product_loop:
     jge dot_product_done   
 
     ; Load arrayX[rcx] and arrayY[rcx] into xmm1 and xmm2
-
     movss xmm1, dword [rdi + rcx * 4]  
     movss xmm2, dword [rsi + rcx * 4]  
 
